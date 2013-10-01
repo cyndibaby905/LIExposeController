@@ -47,9 +47,9 @@
  Initialization and Setup Methods
  */
 - (id)init;
-@property (nonatomic, retain) NSMutableArray *viewControllers;
-@property (nonatomic, assign) id<LIExposeControllerDelegate> exposeDelegate;
-@property (nonatomic, assign) id<LIExposeControllerDataSource> exposeDataSource;
+@property (nonatomic, strong) NSMutableArray *viewControllers;
+@property (nonatomic, unsafe_unretained) id<LIExposeControllerDelegate> exposeDelegate;
+@property (nonatomic, unsafe_unretained) id<LIExposeControllerDataSource> exposeDataSource;
 
 /**
  Display Configuration Methods
@@ -80,13 +80,13 @@
  */
 @property (nonatomic, readonly) BOOL isZoomedOut;
 @property (nonatomic, readonly) NSUInteger selectedIndex;
-@property (nonatomic, readonly) UIViewController *selectedViewController;
+@property (unsafe_unretained, nonatomic, readonly) UIViewController *selectedViewController;
 
 /**
  Access the Header and Footer Views
  */
-@property (nonatomic, readonly, retain) UIView *headerView;
-@property (nonatomic, readonly, retain) UIView *footerView;
+@property (nonatomic, readonly, strong) UIView *headerView;
+@property (nonatomic, readonly, strong) UIView *footerView;
 
 @end
 

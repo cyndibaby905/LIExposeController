@@ -24,7 +24,10 @@
 		6E4790A51512C83500B1AD40 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E47909A1512C83500B1AD40 /* icon@2x.png */; };
 		6E4790AF1512C86200B1AD40 /* EDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E4790AE1512C86200B1AD40 /* EDViewController.m */; };
 		6E4790B11512C93400B1AD40 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E4790B01512C93400B1AD40 /* QuartzCore.framework */; };
-		6E7F4F881520D2C5005543BB /* EDDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E7F4F871520D2C5005543BB /* EDDetailViewController.m */; };
+		7734161F17FB18F300A4F2A3 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7734161C17FB18F300A4F2A3 /* Default-568h@2x.png */; };
+		7734162017FB18F300A4F2A3 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 7734161D17FB18F300A4F2A3 /* Default.png */; };
+		7734162117FB18F300A4F2A3 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7734161E17FB18F300A4F2A3 /* Default@2x.png */; };
+		7734162517FB198D00A4F2A3 /* SAMGradientView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7734162417FB198D00A4F2A3 /* SAMGradientView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,8 +54,11 @@
 		6E4790AD1512C86200B1AD40 /* EDViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EDViewController.h; sourceTree = "<group>"; };
 		6E4790AE1512C86200B1AD40 /* EDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EDViewController.m; sourceTree = "<group>"; };
 		6E4790B01512C93400B1AD40 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		6E7F4F861520D2C5005543BB /* EDDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EDDetailViewController.h; sourceTree = "<group>"; };
-		6E7F4F871520D2C5005543BB /* EDDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EDDetailViewController.m; sourceTree = "<group>"; };
+		7734161C17FB18F300A4F2A3 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		7734161D17FB18F300A4F2A3 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		7734161E17FB18F300A4F2A3 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		7734162317FB198D00A4F2A3 /* SAMGradientView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAMGradientView.h; sourceTree = "<group>"; };
+		7734162417FB198D00A4F2A3 /* SAMGradientView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SAMGradientView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +79,10 @@
 		6E4790651512C79E00B1AD40 = {
 			isa = PBXGroup;
 			children = (
+				7734162217FB198D00A4F2A3 /* SAMGradientView */,
+				7734161C17FB18F300A4F2A3 /* Default-568h@2x.png */,
+				7734161D17FB18F300A4F2A3 /* Default.png */,
+				7734161E17FB18F300A4F2A3 /* Default@2x.png */,
 				6E47907A1512C79E00B1AD40 /* Demo */,
 				6E47908E1512C83500B1AD40 /* Resources */,
 				6E4790731512C79E00B1AD40 /* Frameworks */,
@@ -106,8 +116,6 @@
 				6E4790841512C79E00B1AD40 /* EDAppDelegate.m */,
 				6E4790AD1512C86200B1AD40 /* EDViewController.h */,
 				6E4790AE1512C86200B1AD40 /* EDViewController.m */,
-				6E7F4F861520D2C5005543BB /* EDDetailViewController.h */,
-				6E7F4F871520D2C5005543BB /* EDDetailViewController.m */,
 				6E47908B1512C80200B1AD40 /* LIExposeController.h */,
 				6E47908C1512C80200B1AD40 /* LIExposeController.m */,
 				6E47907B1512C79E00B1AD40 /* Supporting Files */,
@@ -147,6 +155,16 @@
 				6E47909A1512C83500B1AD40 /* icon@2x.png */,
 			);
 			path = images;
+			sourceTree = "<group>";
+		};
+		7734162217FB198D00A4F2A3 /* SAMGradientView */ = {
+			isa = PBXGroup;
+			children = (
+				7734162317FB198D00A4F2A3 /* SAMGradientView.h */,
+				7734162417FB198D00A4F2A3 /* SAMGradientView.m */,
+			);
+			name = SAMGradientView;
+			path = ../SAMGradientView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -201,15 +219,18 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7734162117FB18F300A4F2A3 /* Default@2x.png in Resources */,
 				6E47907F1512C79E00B1AD40 /* InfoPlist.strings in Resources */,
 				6E47909B1512C83500B1AD40 /* add.png in Resources */,
 				6E47909C1512C83500B1AD40 /* add@2x.png in Resources */,
+				7734161F17FB18F300A4F2A3 /* Default-568h@2x.png in Resources */,
 				6E47909F1512C83500B1AD40 /* deleteBtn.png in Resources */,
 				6E4790A01512C83500B1AD40 /* deleteBtn@2x.png in Resources */,
 				6E4790A31512C83500B1AD40 /* icon-iPad.png in Resources */,
 				6E4790A41512C83500B1AD40 /* icon.png in Resources */,
 				6E4790A51512C83500B1AD40 /* icon@2x.png in Resources */,
 				6E156E3C151F9DC500DA6E4F /* Localizable.strings in Resources */,
+				7734162017FB18F300A4F2A3 /* Default.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -220,11 +241,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7734162517FB198D00A4F2A3 /* SAMGradientView.m in Sources */,
 				6E4790811512C79E00B1AD40 /* main.m in Sources */,
 				6E4790851512C79E00B1AD40 /* EDAppDelegate.m in Sources */,
 				6E47908D1512C80200B1AD40 /* LIExposeController.m in Sources */,
 				6E4790AF1512C86200B1AD40 /* EDViewController.m in Sources */,
-				6E7F4F881520D2C5005543BB /* EDDetailViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,10 +319,12 @@
 		6E4790891512C79E00B1AD40 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Demo/Demo-Prefix.pch";
 				INFOPLIST_FILE = "Demo/Demo-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -309,10 +332,12 @@
 		6E47908A1512C79E00B1AD40 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Demo/Demo-Prefix.pch";
 				INFOPLIST_FILE = "Demo/Demo-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

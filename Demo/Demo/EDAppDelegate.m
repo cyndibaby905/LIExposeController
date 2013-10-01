@@ -45,10 +45,10 @@ static int _viewControllerId = 0;
 #pragma mark - LIExposeControllerDataSource Methods
 
 - (UIView *)backgroundViewForExposeController:(LIExposeController *)exposeController {
-    UIView *v = [[[UIView alloc] initWithFrame:CGRectMake(0, 
+    UIView *v = [[UIView alloc] initWithFrame:CGRectMake(0, 
                                                           0, 
                                                           exposeController.view.frame.size.width, 
-                                                          exposeController.view.frame.size.height)] autorelease];
+                                                          exposeController.view.frame.size.height)];
     v.backgroundColor = [UIColor darkGrayColor];
     return v;
 }
@@ -59,7 +59,7 @@ static int _viewControllerId = 0;
 }
 
 - (UIView *)addViewForExposeController:(LIExposeController *)exposeController {
-    UIView *addView = [[[UIImageView alloc] initWithImage:[UIImage imageNamed:ADD_BUTTON_IMAGE]] autorelease];
+    UIView *addView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:ADD_BUTTON_IMAGE]];
     return addView;
 }
 
@@ -68,11 +68,11 @@ static int _viewControllerId = 0;
         viewController = [(UINavigationController *)viewController topViewController];
     }
     if ([viewController isKindOfClass:[EDViewController class]]) {
-        UILabel *label = [[[UILabel alloc] initWithFrame:CGRectMake(0, 
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 
                                                                     0, 
                                                                     viewController.view.bounds.size.width, 
-                                                                    viewController.view.bounds.size.height)] autorelease];
-        label.backgroundColor = [UIColor colorWithWhite:0 alpha:0.4];
+                                                                    viewController.view.bounds.size.height)];
+        label.backgroundColor = [UIColor colorWithWhite:0 alpha:0.0];
         label.text = viewController.title;
         label.textColor = [UIColor whiteColor];
         label.textAlignment = UITextAlignmentCenter;
@@ -85,13 +85,13 @@ static int _viewControllerId = 0;
         return nil;
     }
 }
-
+/*
 - (UILabel *)exposeController:(LIExposeController *)exposeController labelForViewController:(UIViewController *)viewController {
     if ([viewController isKindOfClass:[UINavigationController class]]) {
         viewController = [(UINavigationController *)viewController topViewController];
     }
     if ([viewController isKindOfClass:[EDViewController class]]) {
-        UILabel *label = [[[UILabel alloc] init] autorelease];
+        UILabel *label = [[UILabel alloc] init];
         label.backgroundColor = [UIColor clearColor];
         label.text = viewController.title;
         label.textColor = [UIColor whiteColor];
@@ -107,7 +107,7 @@ static int _viewControllerId = 0;
     } else {
         return nil;
     }
-}
+}*/
 
 /**
  Optional Header View
@@ -157,16 +157,16 @@ static int _viewControllerId = 0;
 #pragma mark - Helper Methods
 
 - (UIViewController *)newViewControllerForExposeController:(LIExposeController *)exposeController {
-    UIViewController *vc = [[[EDViewController alloc] init] autorelease];
+    UIViewController *vc = [[EDViewController alloc] init];
     vc.title = [NSString stringWithFormat:NSLocalizedString(@"view_title_format_string", @"view_title_format_string"), _viewControllerId];
     _viewControllerId++;
-    return [[[UINavigationController alloc] initWithRootViewController:vc] autorelease];
+    return [[UINavigationController alloc] initWithRootViewController:vc];
 }
 
 #pragma mark - UIApplicationDelegate Methods
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    LIExposeController *exposeController = [[[LIExposeController alloc] init] autorelease];
+    LIExposeController *exposeController = [[LIExposeController alloc] init];
     exposeController.exposeDelegate = self;
     exposeController.exposeDataSource = self;
     exposeController.editing = YES;
@@ -177,16 +177,11 @@ static int _viewControllerId = 0;
                                         [self newViewControllerForExposeController:exposeController],
                                         nil];
     
-    self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = exposeController;
     [self.window makeKeyAndVisible];
     return YES;
 }
 
-- (void)dealloc
-{
-    [_window release];
-    [super dealloc];
-}
 
 @end

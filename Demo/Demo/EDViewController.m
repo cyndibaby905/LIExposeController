@@ -15,12 +15,11 @@
  */
 
 #import "EDViewController.h"
-#import "EDDetailViewController.h"
+#import "SAMGradientView.h"
 
 @interface EDViewController (Private)
 
 - (void)setupDetailButton;
-- (void)pushDetailViewController:(id)sender;
 
 @end
 
@@ -28,37 +27,54 @@
 
 - (void)loadView {
     [super loadView];
-    self.view.backgroundColor = [UIColor redColor];
+    self.view.backgroundColor = [UIColor yellowColor];
+    
+    SAMGradientView *gradientView = [[SAMGradientView alloc] initWithFrame:CGRectMake(0.0f, 0.0f, self.view.frame.size.width, self.view.frame.size.height)];
+    gradientView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	gradientView.gradientColors = @[
+                                    [UIColor colorWithRed:1.0f green:0.0f blue:0.0f alpha:1.0f],
+                                    [UIColor colorWithRed:0.0f green:1.0f blue:0.0f alpha:1.0f],
+                                    ];
+    gradientView.gradientMode = SAMGradientViewModeRadial;
+	[self.view addSubview:gradientView];
+    
     
     // Optional button to demonstrate navigation stack
 //    [self setupDetailButton];
 }
 
-- (void)setupDetailButton {
-    UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [button setTitle:NSLocalizedString(@"detail_button_title", @"detail_button_title")
-            forState:UIControlStateNormal];
-    [button sizeToFit];
-    button.center = CGPointMake(self.view.frame.size.width / 2, self.view.frame.size.height / 2);
-    button.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|
-    UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
-    [button addTarget:self action:@selector(pushDetailViewController:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:button];
-}
+
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     // Return YES for supported orientations
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+    return (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) || (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (BOOL)shouldAutorotate {
+    return YES;
+}
+- (NSUInteger)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
+}
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+    return UIInterfaceOrientationPortrait;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationController.navigationBarHidden = YES;
     self.navigationController.toolbarHidden = YES;
-    self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"expose_title", @"expose_title")
-                                                                               style:UIBarButtonItemStyleBordered
-                                                                              target:self.navigationController.exposeController
-                                                                              action:@selector(toggleExpose)] autorelease];
+//    self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"expose_title", @"expose_title")
+//                                                                               style:UIBarButtonItemStyleBordered
+//                                                                              target:self.navigationController.exposeController
+//                                                                              action:@selector(toggleExpose)] autorelease];
+    
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeInfoLight];
+    button.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+    button.frame = CGRectMake(self.view.frame.size.width - 50, 20, 30, 30);
+    [button addTarget:self.navigationController.exposeController action:@selector(toggleExpose) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:button];
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -69,6 +85,8 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     NSLog(@"viewDidAppear:%d, %@", animated, self);
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -92,16 +110,16 @@
 
 - (void)viewWillExpandInExposeController:(LIExposeController *)exposeController animated:(BOOL)animated {
     NSLog(@"viewWillExpandInExposeController:%d, %@", animated, self);
-    [self.navigationController setNavigationBarHidden:NO animated:animated];
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
 }
 
 - (void)viewDidExpandInExposeController:(LIExposeController *)exposeController animated:(BOOL)animated {
     NSLog(@"viewDidExpandInExposeController:%d, %@", animated, self);
 }
 
-- (void)pushDetailViewController:(id)sender {
-    EDDetailViewController *detailViewController = [[[EDDetailViewController alloc] init] autorelease];
-    [self.navigationController pushViewController:detailViewController animated:YES];
+- (void)dealloc
+{
+    NSLog(@"123");
 }
 
 @end

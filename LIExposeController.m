@@ -17,6 +17,13 @@
 #import "LIExposeController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
+#define OSVersionIsAvalible(os_version) ([[[UIDevice currentDevice] systemVersion] intValue] >= os_version)
+#define isRetina4 ([[UIScreen mainScreen] applicationFrame].size.height > 480)
+
+
+
+#define LIExposeControllerOffsetY 45
+#define LIExposeControllerRetina4OffsetY 55
 
 NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
 
@@ -49,24 +56,24 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
 /**
  Subviews
  */
-@property (nonatomic, retain) UIView *headerView;
-@property (nonatomic, retain) UIView *footerView;
-@property (nonatomic, retain) UIScrollView *scrollView;
-@property (nonatomic, retain) UIPageControl *pageControl;
-@property (nonatomic, retain) UIView *addChildButton;
-@property (nonatomic, retain) UIView *backgroundView;
+@property (nonatomic, strong) UIView *headerView;
+@property (nonatomic, strong) UIView *footerView;
+@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) UIPageControl *pageControl;
+@property (nonatomic, strong) UIView *addChildButton;
+@property (nonatomic, strong) UIView *backgroundView;
 // Element is a button/NSNull used to delete its respective child view controller
-@property (nonatomic, retain) NSMutableArray *deleteButtons;
+@property (nonatomic, strong) NSMutableArray *deleteButtons;
 // Element is a view containing overlay, label and has a tap gesture
-@property (nonatomic, retain) NSMutableArray *containerViews;
+@property (nonatomic, strong) NSMutableArray *containerViews;
 
 /**
  Current State
  */
 @property (nonatomic, assign) BOOL isZoomedOut;
 @property (nonatomic, assign) NSUInteger selectedIndex;
-@property (nonatomic, assign) UIViewController *selectedViewController;
-@property (nonatomic, readonly) UIViewController *selectedContentViewController;
+@property (unsafe_unretained, nonatomic) UIViewController *selectedViewController;
+@property (unsafe_unretained, nonatomic, readonly) UIViewController *selectedContentViewController;
 @property (nonatomic, readonly) NSUInteger numPerPage;
 @property (nonatomic, assign) NSUInteger currentPage;
 
@@ -147,8 +154,8 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
 - (id)init {
     self = [super init];
     if (self) {
-        _deleteButtons = [[NSMutableArray array] retain];
-        _containerViews = [[NSMutableArray array] retain];
+        _deleteButtons = [NSMutableArray array];
+        _containerViews = [NSMutableArray array];
         _viewControllers = nil;
         _selectedViewController = nil;
         _selectedContentViewController = nil;
@@ -167,7 +174,7 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
         } else {
             _numRows = 2;
             _numCols = 2;
-            _scaleFactor = 0.36;
+            _scaleFactor = 0.45;
             _rowOffset = -10.0;
         }
         _numPerPage = _numRows * _numCols;
@@ -176,17 +183,8 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
 }
 
 - (void)dealloc {
-    self.addChildButton = nil;
-    self.headerView = nil;
-    self.footerView = nil;
-    self.scrollView = nil;
-    self.pageControl = nil;
-    self.backgroundView = nil;
     self.viewControllers = nil;
-    self.deleteButtons = nil;
-    self.containerViews = nil;
     
-    [super dealloc];
 }
 
 #pragma mark - Setters
@@ -204,11 +202,10 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
         }
         index++;
     }
-    [_viewControllers autorelease];
     [self.deleteButtons removeAllObjects];
     [self.containerViews removeAllObjects];
     
-    _viewControllers = [controllers retain];
+    _viewControllers = controllers;
     self.selectedViewController = nil;
     self.selectedIndex = 0;
     if (_viewControllers.count > self.selectedIndex) {
@@ -299,7 +296,7 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
         if ([self.exposeDelegate respondsToSelector:@selector(canAddViewControllersForExposeController:)]) {
             if ([self.exposeDelegate canAddViewControllersForExposeController:self]) {
                 if ([self.exposeDataSource respondsToSelector:@selector(addViewForExposeController:)]) {
-                    _addChildButton = [[self.exposeDataSource addViewForExposeController:self] retain];
+                    _addChildButton = [self.exposeDataSource addViewForExposeController:self];
                     _addChildButton.transform = CGAffineTransformMakeScale(self.scaleFactor, self.scaleFactor);
                     _addChildButton.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|
                     UIViewAutoresizingFlexibleTopMargin|UIViewAutoresizingFlexibleBottomMargin;
@@ -308,7 +305,7 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
                     _addChildButton.center = [self centerWithIndex:addIndex];
                     
                     // Add gesture
-                    UITapGestureRecognizer *addGesture = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addViewController:)] autorelease];
+                    UITapGestureRecognizer *addGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addViewController:)];
                     addGesture.numberOfTapsRequired = 1;
                     [_addChildButton addGestureRecognizer:addGesture];
                 }
@@ -349,7 +346,7 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
     }
     
     // Scroll View
-    self.scrollView = [[[UIScrollView alloc] initWithFrame:CGRectMake(0, self.headerView.exposeHeight, self.view.exposeWidth, self.view.exposeHeight - self.headerView.exposeHeight - self.footerView.exposeHeight)] autorelease];
+    self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, self.headerView.exposeHeight, self.view.exposeWidth, self.view.exposeHeight - self.headerView.exposeHeight - self.footerView.exposeHeight)];
     self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight|
                                        UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin;
     if (self.headerView.autoresizingMask & UIViewAutoresizingFlexibleHeight) {
@@ -368,7 +365,7 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
     [self.view addSubview:self.scrollView];
     
     //Add page control
-    self.pageControl = [[[UIPageControl alloc] init] autorelease];
+    self.pageControl = [[UIPageControl alloc] init];
     self.pageControl.autoresizingMask = UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight|
                                         UIViewAutoresizingFlexibleLeftMargin|UIViewAutoresizingFlexibleRightMargin|
                                         UIViewAutoresizingFlexibleTopMargin;
@@ -414,11 +411,19 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
     CGFloat width = floorf(self.scrollView.exposeWidth * self.scaleFactor);
     CGFloat height = floorf((self.scrollView.exposeHeight - self.pageControl.exposeHeight) * self.scaleFactor);
     CGFloat colSpacing = floorf((self.scrollView.exposeWidth - (self.numCols * width)) / (self.numCols + 1));
-    CGFloat rowSpacing = floorf((self.scrollView.exposeHeight - (self.numRows * height)) / (self.numRows + 1));
+//    CGFloat rowSpacing = floorf((self.scrollView.exposeHeight - (self.numRows * height)) / (self.numRows + 1));
+    CGFloat rowSpacing = colSpacing;
     
     left = colSpacing + (col * colSpacing) + (col * width) + (page * self.scrollView.exposeWidth);
-    top = rowSpacing + (row * rowSpacing) + (row * height) + self.rowOffset;
+    top = /*rowSpacing + */(row * rowSpacing) + (row * height) + self.rowOffset;
     c = CGPointMake(left + floorf(width / 2), top + floorf(height / 2));
+
+    if (isRetina4) {
+        c.y += LIExposeControllerRetina4OffsetY;
+    }
+    else {
+        c.y += LIExposeControllerOffsetY;
+    }
     
     return c;
 }
@@ -441,7 +446,7 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
     [self.scrollView addSubview:viewController.view];
     
     // Add container view
-    UIView *containerView = [[[UIView alloc] initWithFrame:viewController.view.bounds] autorelease];
+    UIView *containerView = [[UIView alloc] initWithFrame:viewController.view.bounds];
     containerView.autoresizingMask = viewController.view.autoresizingMask;
     containerView.clipsToBounds = NO;
     containerView.frame = viewController.view.frame;
@@ -450,7 +455,7 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
     [self.scrollView addSubview:containerView];
     
     // Tap to select gesture
-    UITapGestureRecognizer *selectGesture = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectView:)] autorelease];
+    UITapGestureRecognizer *selectGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(selectView:)];
     selectGesture.enabled = NO;
     selectGesture.delegate = self;
     [containerView addGestureRecognizer:selectGesture];
@@ -478,10 +483,10 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
     if ([self.exposeDelegate respondsToSelector:@selector(exposeController:canDeleteViewController:)] &&
         [self.exposeDelegate exposeController:self canDeleteViewController:viewController]) {
         UIImage *deleteImage = [UIImage imageNamed:DELETE_BUTTON_IMAGE];
-        UIButton *deleteBtn = [[[UIButton alloc] initWithFrame:CGRectMake(containerView.exposeLeft - floorf(deleteImage.size.width / 2),
-                                                                          containerView.exposeTop - floorf(deleteImage.size.height / 2),
+        UIButton *deleteBtn = [[UIButton alloc] initWithFrame:CGRectMake(containerView.exposeLeft + floorf(deleteImage.size.width / 2),
+                                                                          containerView.exposeTop + floorf(deleteImage.size.height / 2),
                                                                           deleteImage.size.width,
-                                                                          deleteImage.size.height)] autorelease];
+                                                                          deleteImage.size.height)];
         [deleteBtn setImage:deleteImage forState:UIControlStateNormal];
         [deleteBtn addTarget:self action:@selector(deleteViewController:) forControlEvents:UIControlEventTouchUpInside];
         deleteBtn.hidden = !self.editing;
@@ -624,7 +629,18 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
                 [self.scrollView sendSubviewToBack:vc.view];
             }
         }
-        
+        for (UIViewController *viewController in self.viewControllers) {
+            if ([viewController isEqual:self.selectedViewController]) {
+                [viewController.view setHidden:NO];
+            }
+            else {
+                [viewController.view setHidden:YES];
+            }
+        }
+        [self.containerViews makeObjectsPerformSelector:@selector(setHidden:) withObject:@YES];
+        [self.deleteButtons makeObjectsPerformSelector:@selector(setHidden:) withObject:@YES];
+        [self.addChildButton setHidden:YES];
+
         // Perform Frame Adjustment
         [self layoutGrid:animated completion:^(BOOL finished) {
             [self exposeZoomedOut:animated];
@@ -638,6 +654,18 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
         }
         
         self.pageControl.alpha = 0;
+        for (UIViewController *viewController in self.viewControllers) {
+            if ([viewController isEqual:self.selectedViewController]) {
+                [viewController.view setHidden:NO];
+            }
+            else {
+                [viewController.view setHidden:YES];
+            }
+        }
+        [self.containerViews makeObjectsPerformSelector:@selector(setHidden:) withObject:@YES];
+        [self.deleteButtons makeObjectsPerformSelector:@selector(setHidden:) withObject:@YES];
+        [self.addChildButton setHidden:YES];
+        
         
         // Bring the selected view to the top of the stack
         [self.scrollView bringSubviewToFront:self.selectedViewController.view];
@@ -686,6 +714,12 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
                                  } else {
                                      [viewController viewDidDisappear:animated];
                                  }
+                                 
+                                 
+                                [viewController.view setHidden:NO];
+                                 [[self.containerViews objectAtIndex:i] setHidden:NO];
+                                 [[self.deleteButtons objectAtIndex:i] setHidden:NO];
+                                 [self.addChildButton setHidden:NO];
                              }];
             i++;
         }
@@ -714,10 +748,11 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
     
     // This is the currently selected view
     NSUInteger i = 0;
+
     for (UIViewController *viewController in self.viewControllers) {
         // Real View
         [viewController.view endEditing:YES];
-        
+       
         // Container View
         UIView *containerView = [self.containerViews objectAtIndex:i];
         [self.scrollView bringSubviewToFront:containerView];
@@ -733,11 +768,11 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
         
         // Layout the grid
         CGPoint c = [self centerWithIndex:i];
-        
         CGFloat tx = c.x - floorf(viewController.view.center.x);
         CGFloat ty = c.y - floorf(viewController.view.center.y);
-        
-        // Animate (optional)      
+        UIImage *deleteImage = [UIImage imageNamed:DELETE_BUTTON_IMAGE];
+
+        // Animate (optional)
         [UIView animateWithDuration:animateDuration
                               delay:0.0
                             options:UIViewAnimationOptionCurveEaseOut
@@ -754,7 +789,8 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
                              containerView.frame = viewController.view.frame;
                              if (deleteButton) {
                                  deleteButton.alpha = 1.0;
-                                 deleteButton.center = containerView.frame.origin;
+                                 //deleteButton.center = containerView.frame.origin;
+                                 deleteButton.frame = CGRectMake(containerView.frame.origin.x + containerView.frame.size.width - deleteImage.size.width, containerView.frame.origin.y, deleteImage.size.width, deleteImage.size.width);
                              }
                          }
                          completion:^(BOOL finished) {
@@ -828,7 +864,7 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
     for (UIView *view in self.containerViews) {
         [self toggleGestureRecognizer:YES forView:view];
     }
-    [self bounceView:self.selectedViewController.view];
+    //[self bounceView:self.selectedViewController.view];
     if ([self.selectedContentViewController conformsToProtocol:@protocol(LIExposeControllerChildViewControllerDelegate)] &&
         [self.selectedContentViewController respondsToSelector:@selector(viewDidShrinkInExposeController:animated:)]) {
         [(id<LIExposeControllerChildViewControllerDelegate>)self.selectedContentViewController viewDidShrinkInExposeController:self animated:animated];
@@ -843,6 +879,17 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
             [viewController viewDidAppear:animated];
         }
     }
+//    [UIView animateWithDuration:.3 animations:^{
+        for (UIViewController *viewController in self.viewControllers) {
+            if (![viewController isEqual:self.selectedContentViewController]) {
+                [viewController.view setHidden:NO];
+            }
+        }
+    [self.containerViews makeObjectsPerformSelector:@selector(setHidden:) withObject:nil];
+        [self.deleteButtons makeObjectsPerformSelector:@selector(setHidden:) withObject:nil];
+        [self.addChildButton setHidden:NO];
+//    }];
+    
 }
 
 - (void)exposeZoomedIn:(BOOL)animated {
@@ -869,6 +916,26 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
     }
     return shouldRotate;
 }
+
+
+- (BOOL)shouldAutorotate {
+    BOOL shouldRotate = YES;
+    for (UIViewController *viewController in self.viewControllers) {
+        shouldRotate &= [viewController shouldAutorotate];
+    }
+    return shouldRotate;
+}
+- (NSUInteger)supportedInterfaceOrientations {
+    NSUInteger orientations = UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
+    for (UIViewController *viewController in self.viewControllers) {
+        orientations |= [viewController supportedInterfaceOrientations];
+    }
+    return orientations;
+}
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+    return UIInterfaceOrientationPortrait;
+}
+
 
 - (void)willAnimateFirstHalfOfRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     [super willAnimateFirstHalfOfRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
@@ -1026,11 +1093,11 @@ NSString * const DELETE_BUTTON_IMAGE = @"deleteBtn.png";
 NSString const * kExposeController = @"exposeController";
 
 - (LIExposeController *)exposeController {
-    return (LIExposeController *)objc_getAssociatedObject(self, kExposeController);
+    return (LIExposeController *)objc_getAssociatedObject(self, (__bridge const void *)(kExposeController));
 }
 
 - (void)setExposeController:(LIExposeController *)exposeController {
-    objc_setAssociatedObject(self, kExposeController, exposeController, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, (__bridge const void *)(kExposeController), exposeController, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 @end
